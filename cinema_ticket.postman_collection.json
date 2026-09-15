@@ -1,0 +1,212 @@
+{
+  "info": {
+    "_postman_id": "f6cbfd9e-b038-4ddb-8457-4cc7896318ad",
+    "name": "cinema_ticket",
+    "description": "StartFragment\n\nCollection **cinema_ticket** berisi kumpulan endpoint REST API untuk sistem pemesanan tiket bioskop, meliputi proses autentikasi, pengelolaan cinema, studio, kursi, film, jadwal tayang (showtime), serta proses pemesanan tiket. Endpoint dibedakan berdasarkan hak akses pengguna, di mana proses pengelolaan data utama dilakukan oleh **Admin**, sedangkan data yang bersifat informasi dapat diakses oleh **Customer**.\n\nEndFragment",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "40404063"
+  },
+  "item": [
+    {
+      "name": "Register",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"Adhitya\",\r\n  \"email\": \"adeteka0210@gmail.com\",\r\n  \"password\": \"Password123!\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/auth/register",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "auth",
+            "register"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Verif Email",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/auth/verify-email?token=e31ebaba46f05e1362bb4513e0f8f0ac22279569380aa6660510ff01d1ffc38d",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "auth",
+            "verify-email"
+          ],
+          "query": [
+            {
+              "key": "token",
+              "value": "e31ebaba46f05e1362bb4513e0f8f0ac22279569380aa6660510ff01d1ffc38d"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"email\": \"admin@cinematicket.com\",\r\n    \"password\": \"Admin123!\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/auth/login",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "cinema",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"Cinema XXI Paragon\",\r\n  \"city\": \"Semarang\",\r\n  \"address\": \"Jl. Pemuda No. 118, Semarang\"\r\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/cinemas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "cinemas"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "studio",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"cinema_id\": \"a5e12baa-a443-4e61-9d9a-4d5e2e941877\",\r\n    \"name\": \"Studio 3\",\r\n    \"rows\": 10,\r\n    \"seats_per_row\": 12\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/studios",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "studios"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "movie",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"title\": \"The Last Journey\",\r\n    \"description\": \"Film petualangan perjalanan menuju tempat yang belum pernah dijelajahi.\",\r\n    \"duration_minutes\": 120,\r\n    \"genre\": \"Adventure\",\r\n    \"age_rating\": \"13+\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/movies",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "movies"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Showtime",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"movie_id\": \"2a3f7d6b-6b3e-4e34-a3b1-e2300a2469a1\",\r\n  \"cinema_id\": \"f263ff9f-7859-4f38-82fa-f6e96ec8a75b\",\r\n  \"studio_id\": \"983b0676-fd38-4206-bc15-bbaf4ed3453b\",\r\n  \"start_time\": \"2026-09-16T19:00:00+07:00\",\r\n  \"end_time\": \"2026-09-16T21:05:00+07:00\",\r\n  \"price\": 50000\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/showtimes",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "showtimes"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

@@ -1,0 +1,649 @@
+basePath: /api
+definitions:
+  dto.CreateCinemaRequest:
+    properties:
+      address:
+        type: string
+      city:
+        maxLength: 100
+        minLength: 2
+        type: string
+      name:
+        maxLength: 150
+        minLength: 3
+        type: string
+    required:
+    - address
+    - city
+    - name
+    type: object
+  dto.CreateShowtimeRequest:
+    properties:
+      cinema_id:
+        type: string
+      end_time:
+        type: string
+      movie_id:
+        type: string
+      price:
+        type: number
+      start_time:
+        type: string
+      studio_id:
+        type: string
+    required:
+    - cinema_id
+    - end_time
+    - movie_id
+    - price
+    - start_time
+    - studio_id
+    type: object
+  dto.CreateStudioRequest:
+    properties:
+      cinema_id:
+        type: string
+      name:
+        maxLength: 100
+        minLength: 1
+        type: string
+    required:
+    - cinema_id
+    - name
+    type: object
+  dto.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  dto.RegisterRequest:
+    properties:
+      email:
+        maxLength: 150
+        type: string
+      name:
+        maxLength: 100
+        minLength: 3
+        type: string
+      password:
+        maxLength: 100
+        minLength: 8
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+  dto.UpdateCinemaRequest:
+    properties:
+      address:
+        type: string
+      city:
+        maxLength: 100
+        minLength: 2
+        type: string
+      name:
+        maxLength: 150
+        minLength: 3
+        type: string
+    required:
+    - address
+    - city
+    - name
+    type: object
+  dto.UpdateShowtimeRequest:
+    properties:
+      cinema_id:
+        type: string
+      end_time:
+        type: string
+      movie_id:
+        type: string
+      price:
+        type: number
+      start_time:
+        type: string
+      status:
+        enum:
+        - SCHEDULED
+        - ONGOING
+        - COMPLETED
+        - CANCELLED
+        type: string
+      studio_id:
+        type: string
+    required:
+    - cinema_id
+    - end_time
+    - movie_id
+    - price
+    - start_time
+    - status
+    - studio_id
+    type: object
+  dto.UpdateStudioRequest:
+    properties:
+      cinema_id:
+        type: string
+      name:
+        maxLength: 100
+        minLength: 1
+        type: string
+    required:
+    - cinema_id
+    - name
+    type: object
+  response.Response:
+    properties:
+      data: {}
+      error: {}
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: REST API untuk sistem pemesanan tiket bioskop.
+  title: Cinema Ticket API
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login menggunakan email dan password.
+      parameters:
+      - description: Login request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Login
+      tags:
+      - Auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Membuat akun customer baru dan mengirim email verifikasi.
+      parameters:
+      - description: Register request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Register customer
+      tags:
+      - Auth
+  /auth/verify-email:
+    get:
+      description: Memverifikasi email customer menggunakan verification token.
+      parameters:
+      - description: Verification token
+        in: query
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Verify email
+      tags:
+      - Auth
+  /cinemas:
+    get:
+      description: Mengambil seluruh data cinema
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Get all cinemas
+      tags:
+      - Cinemas
+    post:
+      consumes:
+      - application/json
+      description: Membuat data cinema baru
+      parameters:
+      - description: Cinema
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateCinemaRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Create cinema
+      tags:
+      - Cinemas
+  /cinemas/{id}:
+    delete:
+      description: Menghapus data cinema
+      parameters:
+      - description: Cinema ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Delete cinema
+      tags:
+      - Cinemas
+    get:
+      description: Mengambil detail cinema berdasarkan ID
+      parameters:
+      - description: Cinema ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Get cinema by ID
+      tags:
+      - Cinemas
+    put:
+      consumes:
+      - application/json
+      description: Mengubah data cinema
+      parameters:
+      - description: Cinema ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Cinema
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateCinemaRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Update cinema
+      tags:
+      - Cinemas
+  /showtimes:
+    get:
+      description: Mendapatkan semua jadwal tayang.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Get semua jadwal tayang
+      tags:
+      - Showtimes
+    post:
+      consumes:
+      - application/json
+      description: Membuat jadwal tayang baru.
+      parameters:
+      - description: Create showtime request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateShowtimeRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Create jadwal tayang
+      tags:
+      - Showtimes
+  /showtimes/{id}:
+    delete:
+      description: Menghapus jadwal tayang.
+      parameters:
+      - description: Showtime ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Delete jadwal tayang
+      tags:
+      - Showtimes
+    get:
+      description: Mendapatkan detail jadwal tayang berdasarkan ID.
+      parameters:
+      - description: Showtime ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Get jadwal tayang berdasarkan ID
+      tags:
+      - Showtimes
+    put:
+      consumes:
+      - application/json
+      description: Mengubah data jadwal tayang.
+      parameters:
+      - description: Showtime ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update showtime request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateShowtimeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Update jadwal tayang
+      tags:
+      - Showtimes
+  /studios:
+    get:
+      description: Mendapatkan semua studio
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Get all studios
+      tags:
+      - Studios
+    post:
+      consumes:
+      - application/json
+      description: Membuat studio baru
+      parameters:
+      - description: Create studio request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateStudioRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - CookieAuth: []
+      summary: Create studio
+      tags:
+      - Studios
+  /studios/{id}:
+    delete:
+      description: Menghapus studio
+      parameters:
+      - description: Studio ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - CookieAuth: []
+      summary: Delete studio
+      tags:
+      - Studios
+    get:
+      description: Mendapatkan studio berdasarkan ID
+      parameters:
+      - description: Studio ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Get studio by ID
+      tags:
+      - Studios
+    put:
+      consumes:
+      - application/json
+      description: Mengubah data studio
+      parameters:
+      - description: Studio ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update studio request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateStudioRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - CookieAuth: []
+      summary: Update studio
+      tags:
+      - Studios
+swagger: "2.0"

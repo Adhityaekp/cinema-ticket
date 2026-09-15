@@ -2,12 +2,16 @@ package config
 
 import (
 	"os"
+	"strconv"
 
 	"github.com/joho/godotenv"
 )
 
 type Config struct {
-	AppPort string
+	AppName    string
+	AppEnv     string
+	AppPort    string
+	AppBaseURL string
 
 	DBHost     string
 	DBPort     string
@@ -19,37 +23,70 @@ type Config struct {
 	RedisHost     string
 	RedisPort     string
 	RedisPassword string
+	RedisDB       string
 
-	JWTSecret string
+	JWTSecret              string
+	JWTExpireHours         int
+	JWTAccessExpireMinutes int
+	JWTRefreshExpireDays   int
+
+	CookieSecure bool
+	CookieDomain string
+
+	SMTPHost     string
+	SMTPPort     string
+	SMTPUsername string
+	SMTPPassword string
+	SMTPFrom     string
 }
 
 func Load() *Config {
 	_ = godotenv.Load()
 
+	jwtExpireHours, _ := strconv.Atoi(
+		os.Getenv("JWT_EXPIRE_HOURS"),
+	)
+
+	jwtAccessExpireMinutes, _ := strconv.Atoi(
+		os.Getenv("JWT_ACCESS_EXPIRE_MINUTES"),
+	)
+
+	jwtRefreshExpireDays, _ := strconv.Atoi(
+		os.Getenv("JWT_REFRESH_EXPIRE_DAYS"),
+	)
+
+	cookieSecure := os.Getenv("COOKIE_SECURE") == "true"
+
 	return &Config{
-		AppPort: getEnv("APP_PORT", "8080"),
+		AppName:    os.Getenv("APP_NAME"),
+		AppEnv:     os.Getenv("APP_ENV"),
+		AppPort:    os.Getenv("APP_PORT"),
+		AppBaseURL: os.Getenv("APP_BASE_URL"),
 
-		DBHost:     getEnv("DB_HOST", "localhost"),
-		DBPort:     getEnv("DB_PORT", "5432"),
-		DBUser:     getEnv("DB_USER", "postgres"),
-		DBPassword: getEnv("DB_PASSWORD", ""),
-		DBName:     getEnv("DB_NAME", "cinema_ticket"),
-		DBSSLMode:  getEnv("DB_SSLMODE", "disable"),
+		DBHost:     os.Getenv("DB_HOST"),
+		DBPort:     os.Getenv("DB_PORT"),
+		DBUser:     os.Getenv("DB_USER"),
+		DBPassword: os.Getenv("DB_PASSWORD"),
+		DBName:     os.Getenv("DB_NAME"),
+		DBSSLMode:  os.Getenv("DB_SSLMODE"),
 
-		RedisHost:     getEnv("REDIS_HOST", "localhost"),
-		RedisPort:     getEnv("REDIS_PORT", "6379"),
-		RedisPassword: getEnv("REDIS_PASSWORD", ""),
+		RedisHost:     os.Getenv("REDIS_HOST"),
+		RedisPort:     os.Getenv("REDIS_PORT"),
+		RedisPassword: os.Getenv("REDIS_PASSWORD"),
+		RedisDB:       os.Getenv("REDIS_DB"),
 
-		JWTSecret: getEnv("JWT_SECRET", ""),
+		JWTSecret:              os.Getenv("JWT_SECRET"),
+		JWTExpireHours:         jwtExpireHours,
+		JWTAccessExpireMinutes: jwtAccessExpireMinutes,
+		JWTRefreshExpireDays:   jwtRefreshExpireDays,
+
+		CookieSecure: cookieSecure,
+		CookieDomain: os.Getenv("COOKIE_DOMAIN"),
+
+		SMTPHost:     os.Getenv("SMTP_HOST"),
+		SMTPPort:     os.Getenv("SMTP_PORT"),
+		SMTPUsername: os.Getenv("SMTP_USERNAME"),
+		SMTPPassword: os.Getenv("SMTP_PASSWORD"),
+		SMTPFrom:     os.Getenv("SMTP_FROM"),
 	}
-}
-
-func getEnv(key, fallback string) string {
-	value := os.Getenv(key)
-
-	if value == "" {
-		return fallback
-	}
-
-	return value
 }
